@@ -58,7 +58,6 @@ public class EnemyManager : MonoBehaviour {
         if (collision.gameObject.tag == "wall")
         {
 
-            Debug.Log(collision.relativeVelocity);
             rb2D.AddForce(bounceWallPower);
             rb2D.AddTorque(hitWallTorquePower);
         }
