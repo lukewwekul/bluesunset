@@ -4,6 +4,7 @@ public class EnemyManager : MonoBehaviour {
 
     Rigidbody2D rb2D;
     Animator    animator;
+    AudioSource audioSrc;
     Vector2     bounceWallPower = new Vector2(-100, -100);
     float       hitWallTorquePower = 40f;
 
@@ -14,7 +15,7 @@ public class EnemyManager : MonoBehaviour {
 
         rb2D = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-
+        audioSrc = GetComponent<AudioSource>();
     }
 
 
@@ -26,12 +27,21 @@ public class EnemyManager : MonoBehaviour {
         {
 
             animator.SetBool("flyFL", true);
+            animator.SetBool("fallFL", false);
+        }
+
+        else if (rb2D.velocity.y < -1)
+        {
+
+            animator.SetBool("flyFL", false);
+            animator.SetBool("fallFL", true);
         }
 
         else
         {
 
             animator.SetBool("flyFL", false);
+            animator.SetBool("fallFL", false);
         }
 
         if (rb2D.IsSleeping())
@@ -50,9 +60,11 @@ public class EnemyManager : MonoBehaviour {
 
             Debug.Log(collision.relativeVelocity);
             rb2D.AddForce(bounceWallPower);
-            //rb2D.AddForce(collision.relativeVelocity*100);
             rb2D.AddTorque(hitWallTorquePower);
         }
+
+        audioSrc.volume = collision.relativeVelocity.magnitude / 12.5f;
+        audioSrc.Play();
     }
 
 

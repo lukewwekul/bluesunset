@@ -1,27 +1,30 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class PlayerMovement : MonoBehaviour
+public class PlayerManager : MonoBehaviour
 {
 
-    Rigidbody2D     rb2D;
-    BoxCollider2D   bc2D;
-    SpriteRenderer  sr;
-    Animator        animator;
+    Rigidbody2D         rb2D;
+    BoxCollider2D       bc2D;
+    SpriteRenderer      sr;
+    Animator            animator;
 
-    HitManager      hitMng;
+    HitManager          hitMng;
 
-    int             moveHorizontal = 0;
+    int                 moveHorizontal = 0;
 
-    Vector2         moveVector = new Vector2(0, 0),
-                    colliderOffsetMoveRight = new Vector2(0, 0),
-                    colliderOffsetMoveLeft = new Vector2(0, 0);
+    Vector2             moveVector = new Vector2(0, 0),
+                        colliderOffsetMoveRight = new Vector2(0, 0),
+                        colliderOffsetMoveLeft = new Vector2(0, 0);
 
-    public Vector2  spriteFlipOffsetX = new Vector2(1.45f, 0),
-                    hitPower = new Vector2(3750, 3750);
+    public Vector2      spriteFlipOffsetX = new Vector2(1.45f, 0),
+                        hitPower = new Vector2(3750, 3750);
 
-    public float    moveSpeed = 4,
-                    hitTorque = -40;
+    public float        moveSpeed = 4,
+                        hitTorque = -40;
+
+    public AudioSource  audioHit,
+                        audioMiss;
 
 
 
@@ -46,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
     {
 
         moveHorizontal = (int)Input.GetAxisRaw("Horizontal");
+
         if(Input.GetKeyDown(KeyCode.R))
         {
 
@@ -78,6 +82,7 @@ public class PlayerMovement : MonoBehaviour
             }
             return true;
         }
+        
         else
         {
 
@@ -99,7 +104,7 @@ public class PlayerMovement : MonoBehaviour
             rb2D.MovePosition(rb2D.position + spriteFlipOffsetX);
             return true;
         }
-        
+
         else if (moveHorizontal == -1 && !sr.flipX)
         {
 
@@ -165,8 +170,19 @@ public class PlayerMovement : MonoBehaviour
     public bool hit()
     {
 
-        Debug.Log(hitMng.hit(hitPower, hitTorque));
-        return false;
+        if (hitMng.hit(hitPower, hitTorque))
+        {
+
+            audioHit.Play();
+            return true;
+        }
+
+        else
+        {
+
+            audioMiss.Play();
+            return false;
+        }
     }
 
 
