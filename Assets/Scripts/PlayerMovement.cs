@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -16,15 +17,17 @@ public class PlayerMovement : MonoBehaviour
                     colliderOffsetMoveRight = new Vector2(0, 0),
                     colliderOffsetMoveLeft = new Vector2(0, 0);
 
-    public float    moveSpeed = 4;
-
     public Vector2  spriteFlipOffsetX = new Vector2(1.45f, 0),
-                    hitPower = new Vector2(350, 350);
+                    hitPower = new Vector2(3750, 3750);
+
+    public float    moveSpeed = 4,
+                    hitTorque = -40;
 
 
 
 	void Start ()
     {
+
         rb2D = GetComponent<Rigidbody2D>();
         bc2D = GetComponent<BoxCollider2D>();
 
@@ -41,13 +44,20 @@ public class PlayerMovement : MonoBehaviour
 
 	void Update ()
     {
+
         moveHorizontal = (int)Input.GetAxisRaw("Horizontal");
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
 	}
 
 
 
     void FixedUpdate()
     {
+
         playerMove();
     }
 
@@ -55,18 +65,22 @@ public class PlayerMovement : MonoBehaviour
 
     bool playerMove()
     {
+
         if (!useWeapon() && moveHorizontal !=0)
         {
+
             if (!flipPlayer())
             {
-            animator.SetBool("moveFL", true);
-            moveVector.Set(moveSpeed * moveHorizontal, 0);
-            rb2D.MovePosition(rb2D.position + moveVector * Time.fixedDeltaTime);
+
+                animator.SetBool("moveFL", true);
+                moveVector.Set(moveSpeed * moveHorizontal, 0);
+                rb2D.MovePosition(rb2D.position + moveVector * Time.fixedDeltaTime);
             }
             return true;
         }
         else
         {
+
             animator.SetBool("moveFL", false);
             return false;
         }
@@ -76,16 +90,19 @@ public class PlayerMovement : MonoBehaviour
 
     bool flipPlayer()
     {
+
         if (moveHorizontal == 1 && sr.flipX)
         {
+
             bc2D.offset = colliderOffsetMoveRight;
             sr.flipX = false;
             rb2D.MovePosition(rb2D.position + spriteFlipOffsetX);
             return true;
         }
-
+        
         else if (moveHorizontal == -1 && !sr.flipX)
         {
+
             bc2D.offset = colliderOffsetMoveLeft;
             sr.flipX = true;
             rb2D.MovePosition(rb2D.position - spriteFlipOffsetX);
@@ -94,6 +111,7 @@ public class PlayerMovement : MonoBehaviour
 
         else
         {
+
             return false;
         }
     }
@@ -102,14 +120,16 @@ public class PlayerMovement : MonoBehaviour
 
     bool useWeapon()
     {
+
         if (Input.GetKey(KeyCode.Space) || Input.GetKey(KeyCode.E))
         {
+
             animator.SetBool("hitFL", true);
             return true;
         }
-
         else
         {
+
             animator.SetBool("hitFL", false);
             return false;
         }
@@ -119,14 +139,16 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D col)
     {
+
         if(col.tag == "enemy")
         {
+
             var tmpEnemyRb2D = col.gameObject.GetComponent<Rigidbody2D>();
             hitMng.setEnemyRigidBody2D(tmpEnemyRb2D);
         }
-
         else
         {
+
             hitMng.resetEnemyRigidBody2D();
         }
     }
@@ -134,6 +156,7 @@ public class PlayerMovement : MonoBehaviour
 
     void OnTriggerExit2D()
     {
+
         hitMng.resetEnemyRigidBody2D();
     }
 
@@ -141,7 +164,8 @@ public class PlayerMovement : MonoBehaviour
 
     public bool hit()
     {
-        Debug.Log(hitMng.hit(hitPower));
+
+        Debug.Log(hitMng.hit(hitPower, hitTorque));
         return false;
     }
 

@@ -5,13 +5,16 @@ public class HitManager {
     Rigidbody2D enemyRb2D;
 
 
-    public bool hit(Vector2 argHitPower)
+
+    public bool hit(Vector2 argHitPower, float argHitTorque)
     {
+
         if (enemyRb2D != null)
         {
+
             enemyRb2D.bodyType = RigidbodyType2D.Dynamic;
             enemyRb2D.AddForce(argHitPower);
-            enemyRb2D.AddTorque(-10);
+            enemyRb2D.AddTorque(argHitTorque);
             return true;
         }
 
@@ -19,16 +22,19 @@ public class HitManager {
     }
 
 
+
     public void setEnemyRigidBody2D(Rigidbody2D argEnemyRb2D)
     {
+
         enemyRb2D = argEnemyRb2D;
     }
 
 
+
     public void resetEnemyRigidBody2D()
     {
-        enemyRb2D = null;
 
+        enemyRb2D = null;
     }
 
 }
